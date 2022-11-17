@@ -23,7 +23,7 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build .\AlonsoAutomation\AlonsoAutomation.sln --configuration Release
 
       - name: dotnet publish
         run: dotnet publish .\AlonsoAutomation\AlonsoAutomation.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
