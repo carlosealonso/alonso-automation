@@ -51,18 +51,18 @@ builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration,
 
 var app = builder.Build();
 
-try
+using(var scope = app.Services.CreateScope())
 {
-  using(var scope = app.Services.CreateScope())
-  {
-      var dbContext = scope.ServiceProvider.GetRequiredService<AutomationDBContext>();
-      
-      dbContext?.Database.Migrate();
-  }
-}
-catch(Exception ex)
-{
-  Console.WriteLine(ex);
+    var dbContext = scope.ServiceProvider.GetRequiredService<AutomationDBContext>();
+        
+    try
+    {
+        dbContext?.Database.Migrate();
+    }
+    catch(Exception ex)
+    {
+      Console.WriteLine(ex);
+    }
 }
 
 // Configure the HTTP request pipeline.
