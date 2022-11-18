@@ -1,12 +1,14 @@
 using Automation.WebApi.Data;
 using Automation.WebApi.Data.Entities;
 using Automation.WebApi.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Automation.WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class HumidityController : ControllerBase
 {
 
