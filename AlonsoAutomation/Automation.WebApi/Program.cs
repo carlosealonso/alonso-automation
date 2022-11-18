@@ -43,8 +43,7 @@ builder.Services.AddSwaggerGen(c =>
         });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("SqliteConnectionString") 
-          ?? "Data Source=alonsoAutomation.db";
+var connectionString = builder.Configuration.GetConnectionString("SqliteConnectionString");
           
 builder.Services.AddSqlite<AutomationDBContext>(connectionString);
 
