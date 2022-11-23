@@ -22,22 +22,41 @@ public class HumidityController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Humidity> Get()
+    public IEnumerable<Humidity> Get(DateTime? dataInicio, DateTime? dataFim)
     {
-        return _db.Humidities.ToList();
+        if(dataInicio.HasValue && dataFim.HasValue)
+        {
+            return _db.Humidities
+                .Where(w => w.DateCreated >= dataInicio && w.DateCreated <= dataFim)
+                .ToList();
+        }
+        else
+        {
+            return _db.Humidities
+                .ToList();
+        }
     }
 
     [HttpPost]
     public IResult Post(HumidityDTO humidity)
     {
-        _db.Add<Humidity>(new Humidity
-            {
-                DateCreated = DateTime.Now,
-                DateInserted = DateTime.Now,
-                DeviceId = _db.Devices.First(f => f.DeviceExternalId.Equals(humidity.DeviceId) ).Id,
-                Value = humidity.Value
-            });
+        var device = _db.Devices.FirstOrDefault(f => f.DeviceExternalId.Equals(humidity.DeviceId) );
         
+        if(device == null)
+            return Results.NotFound($"Device {humidity.DeviceId} not found!");
+
+        var humidityBase = new Humidity
+        {
+            DateCreated =  humidity.DateCreated ?? DateTime.Now,
+            DateInserted = DateTime.Now,
+            DeviceId = device.Id,
+            Value = humidity.Value
+        };
+
+        _db.Add<Humidity>(humidityBase);
+        
+        device.LastCommunication = humidityBase.DateCreated;
+
         _db.SaveChanges();
 
         return Results.Ok();
